@@ -1,22 +1,38 @@
 package controller
 
 import (
-	"net/http"
-
+	"context"
 	"encoding/json"
+	"net/http"
+	"time"
 
+	"github.com/PetrusAriaa/go-http-server/lib"
 	"github.com/PetrusAriaa/go-http-server/models"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
+type res struct {
+	Data     []*models.Book `json:"data"`
+	Length   int64          `json:"length"`
+	Accessed time.Time      `json:"accessed"`
+}
+
 func GetBook(w http.ResponseWriter, r *http.Request) {
-	bookData := &[]models.Book{
-		{Title: "Laut", Author: "Leila Salikha Chudori", Page: 379, Rate: 97},
-		{Title: "Dilan: Dia Adalah Dilanku Tahun 1990", Author: "Pidi Baiq", Page: 332, Rate: 87},
-		{Title: "Cantik Itu Luka", Author: "Eka Kurniawan", Page: 552, Rate: 93},
-		{Title: "Bumi Manusia", Author: "Pramoedya Ananta Toer", Page: 418, Rate: 94},
-		{Title: "Bumi", Author: "Tere Liye", Page: 440, Rate: 98},
+
+	conn := lib.ConnectDB()
+	coll := conn.Database("bookstore").Collection("book")
+
+	cursor, err := coll.Find(context.Background(), bson.D{})
+	if err != nil {
+		panic(err)
 	}
+
+	var books []*models.Book
+	if err = cursor.All(context.Background(), &books); err != nil {
+		panic(err)
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(bookData)
+	json.NewEncoder(w).Encode(res{Data: books, Length: int64(len(books)), Accessed: time.Now()})
 }
