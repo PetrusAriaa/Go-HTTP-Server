@@ -1,8 +1,5 @@
-module http-server
+module github.com/PetrusAriaa/go-http-server
 
-go 1.21.0
+go 1.21.1
 
-require (
-	github.com/google/uuid v1.3.1
-	github.com/gorilla/mux v1.8.0
-)
+require github.com/gorilla/mux v1.8.0
