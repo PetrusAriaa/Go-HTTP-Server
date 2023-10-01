@@ -17,31 +17,31 @@ import (
 )
 
 type BookList struct {
-	Data     []*models.Book `json:"data"`
-	Length   int64          `json:"length"`
-	Accessed time.Time      `json:"accessed"`
+	Data     []models.Book `json:"data"`
+	Length   int64         `json:"length"`
+	Accessed time.Time     `json:"accessed"`
 }
 
 type SingleBook struct {
-	Data     *models.Book `json:"data"`
-	Length   int64        `json:"length"`
-	Accessed time.Time    `json:"accessed"`
+	Data     models.Book `json:"data"`
+	Length   int64       `json:"length"`
+	Accessed time.Time   `json:"accessed"`
 }
 
 func GetBook(w http.ResponseWriter, r *http.Request) {
 
-	var Books []*models.Book
+	var Books []models.Book
 
 	conn := lib.ConnectDB()
 	coll := conn.Database("bookstore").Collection("book")
 
 	defer conn.Disconnect(context.Background())
-	cursor, err := coll.Find(context.Background(), bson.D{})
+	c, err := coll.Find(context.Background(), bson.D{})
 	if err != nil {
 		panic(err)
 	}
 
-	if err = cursor.All(context.Background(), &Books); err != nil {
+	if err = c.All(context.Background(), &Books); err != nil {
 		panic(err)
 	}
 
@@ -72,13 +72,13 @@ func GetBookById(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(SingleBook{Data: &Book, Length: 1, Accessed: time.Now()})
+	json.NewEncoder(w).Encode(SingleBook{Data: Book, Length: 1, Accessed: time.Now()})
 }
 
 func AddBook(w http.ResponseWriter, r *http.Request) {
-	var book models.Book
+	var Book models.Book
 
-	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&Book); err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -89,13 +89,13 @@ func AddBook(w http.ResponseWriter, r *http.Request) {
 	coll := conn.Database("bookstore").Collection("book")
 	defer conn.Disconnect(context.Background())
 
-	if err := validateBookRequest(&book); err != nil {
+	if err := validateBookRequest(&Book); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	book.Id = primitive.NewObjectID()
-	_, err := coll.InsertOne(context.Background(), book)
+	Book.Id = primitive.NewObjectID()
+	_, err := coll.InsertOne(context.Background(), Book)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Internal Server Error %v", err.Error()), http.StatusInternalServerError)
 		return
@@ -111,11 +111,35 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
-	return
+
+	conn := lib.ConnectDB()
+	coll := conn.Database("bookstore").Collection("book")
+	defer conn.Disconnect(context.Background())
+
+	param := mux.Vars(r)["id"]
+	_id, err := primitive.ObjectIDFromHex(param)
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := coll.DeleteOne(context.Background(), bson.D{{Key: "_id", Value: _id}})
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		return
+	}
+
+	if res.DeletedCount == 0 {
+		log.Printf("Cannot find document with id: %s", param)
+		http.Error(w, "book not found", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func validateBookRequest(book *models.Book) error {
-	if book.Title == "" || book.Author == "" || book.Page == 0 {
+	if book.Metadata.Author == "" || book.Metadata.ISBN == "" || book.Metadata.Title == "" || book.Metadata.Page == 0 {
 		return errors.New("missing required fields")
 	}
 	return nil
