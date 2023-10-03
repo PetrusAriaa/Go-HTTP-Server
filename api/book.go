@@ -9,4 +9,5 @@ import (
 func BookRouter(prefix string, r *mux.Router) {
 	b := r.PathPrefix(prefix).Subrouter()
 	b.HandleFunc("/", controller.GetBook)
+	b.HandleFunc("/{id}", controller.GetBookById)
 }
