@@ -5,8 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-env:
-  MONGODB_URI: ${{env.MONGODB_URI}}
+
 jobs:
 
   build:
