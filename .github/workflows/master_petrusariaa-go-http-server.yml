@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_f0afbdb60246418b9ceec1c1e9e20906 }}/petrusariaa/go-http-server:latest
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_f0afbdb60246418b9ceec1c1e9e20906 }}/petrusariaa/go-http-server
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'petrusariaa-go-http-server'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_1c39962aae78449b8c92ed59c6c0e9ae }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_f0afbdb60246418b9ceec1c1e9e20906 }}/petrusariaa/go-http-server:latest'
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_f0afbdb60246418b9ceec1c1e9e20906 }}/petrusariaa/go-http-server'
