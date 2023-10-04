@@ -13,9 +13,9 @@ func main() {
 	r := mux.NewRouter()
 	api.BookRouter("/api/books", r)
 	s := &http.Server{
-		Addr:    ":3000",
+		Addr:    ":80",
 		Handler: r,
 	}
-	fmt.Println("server listening on port 3000")
+	fmt.Println("server listening on port 80")
 	log.Fatal(s.ListenAndServe())
 }
