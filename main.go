@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func main() {
+func Main() {
 	r := mux.NewRouter()
 	api.BookRouter("/api/books", r)
 	s := &http.Server{
