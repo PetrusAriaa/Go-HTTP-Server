@@ -1,4 +1,4 @@
-module github.com/PetrusAriaa/go-http-server
+module github.com/PetrusAriaa/Go-HTTP-Server
 
 go 1.21.1
 

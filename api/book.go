@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/PetrusAriaa/go-http-server/controller"
+	"github.com/PetrusAriaa/Go-HTTP-Server/controller"
 
 	"github.com/gorilla/mux"
 )

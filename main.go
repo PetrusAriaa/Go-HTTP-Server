@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/PetrusAriaa/go-http-server/api"
+	"github.com/PetrusAriaa/Go-HTTP-Server/api"
 	"github.com/gorilla/mux"
 )
 
@@ -16,6 +16,6 @@ func main() {
 		Addr:    ":80",
 		Handler: r,
 	}
-	fmt.Println("server listening on port 80")
+	fmt.Println("server listening on http://127.0.0.1:80")
 	log.Fatal(s.ListenAndServe())
 }

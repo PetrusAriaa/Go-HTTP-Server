@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PetrusAriaa/go-http-server/lib"
-	"github.com/PetrusAriaa/go-http-server/logger"
-	"github.com/PetrusAriaa/go-http-server/models"
+	"github.com/PetrusAriaa/Go-HTTP-Server/lib"
+	"github.com/PetrusAriaa/Go-HTTP-Server/logger"
+	"github.com/PetrusAriaa/Go-HTTP-Server/models"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
