@@ -9,13 +9,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Main() {
+func main() {
 	r := mux.NewRouter()
 	api.BookRouter("/api/books", r)
 	s := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":3000",
 		Handler: r,
 	}
-	fmt.Println("server listening on port 8080")
+	fmt.Println("server listening on port 3000")
 	log.Fatal(s.ListenAndServe())
 }
