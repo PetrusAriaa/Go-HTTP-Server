@@ -5,10 +5,8 @@ WORKDIR /usr/src/app
 COPY . .
 RUN go mod tidy
 
-RUN go build -o ./out/dist .
+ENV MONGODB_URI=${MONGODB_URI}
 
-ENV MONGODB_URI=$MONGODB_URI
-RUN echo $MONGODB_URI
-
+RUN MONGODB_URI=${MONGODB_URI} go build -o ./out/dist .
 
 CMD ./out/dist
