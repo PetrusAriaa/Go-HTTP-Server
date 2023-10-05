@@ -6,4 +6,7 @@ COPY . .
 RUN go mod tidy
 
 RUN go build -o ./out/dist .
+
+RUN echo $MONGODB_URI
+
 CMD ./out/dist
