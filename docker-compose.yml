@@ -5,7 +5,7 @@ services:
     build:
       dockerfile: Dockerfile
     container_name: go-http-server
-    env_file:
-      - .env
+    environment:
+      - MONGODB_URI= ${{ secrets.MONGODB_URI }}
     ports:
       - 3000:80

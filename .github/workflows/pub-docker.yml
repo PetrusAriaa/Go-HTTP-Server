@@ -15,4 +15,6 @@ jobs:
       - name: Build Docker Image
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: docker compose up -d
+        run: |
+          echo env.MONGODB_URI
+          docker compose up -d
