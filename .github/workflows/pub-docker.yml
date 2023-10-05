@@ -31,6 +31,8 @@ jobs:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         with:
           context: .
+          build-args: |
+            "MONGODB_URI: ${{ secrets.MONGODB_URI }}"
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
