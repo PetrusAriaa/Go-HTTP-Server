@@ -16,5 +16,5 @@ jobs:
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
-          echo env.MONGODB_URI
+          echo $MONGODB_URI
           docker compose up -d
