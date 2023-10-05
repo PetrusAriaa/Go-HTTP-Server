@@ -18,3 +18,4 @@ jobs:
         run: |
           echo $MONGODB_URI
           docker compose up -d
+          curl http://localhost:3000/api/books/
