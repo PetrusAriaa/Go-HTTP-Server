@@ -2,10 +2,8 @@ version: '3.8'
 
 services:
   go-http-server:
-    build:
-      dockerfile: Dockerfile
+    build: .
     container_name: go-http-server
-    image: petrusariaa/go-http-server:latest
     environment:
       MONGODB_URI: $MONGODB_URI
     ports:
