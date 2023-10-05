@@ -6,6 +6,6 @@ services:
       dockerfile: Dockerfile
     container_name: go-http-server
     environment:
-      - MONGODB_URI: $MONGODB_URI
+      MONGODB_URI: $MONGODB_URI
     ports:
       - 3000:80
