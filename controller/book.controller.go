@@ -82,9 +82,8 @@ func GetBookById(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(200)
-	// json.NewEncoder(w).Encode(SingleBook{Data: Book, Length: 1, Accessed: time.Now()})
+	json.NewEncoder(w).Encode(SingleBook{Data: Book, Length: 1, Accessed: time.Now()})
 	json.NewEncoder(w).Encode(map[string]string{"message": "Test GHAction"})
-	logger.ResponseLogger(r, http.StatusOK, "Response sent")
 }
 
 func AddBook(w http.ResponseWriter, r *http.Request) {
