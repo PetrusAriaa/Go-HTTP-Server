@@ -12,7 +12,7 @@ import (
 
 func ConnectDB() *mongo.Client {
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Error loading environment: %v", err)
+		log.Println(".env file not found")
 	}
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)

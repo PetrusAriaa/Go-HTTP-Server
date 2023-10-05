@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  go-http-server:
+    build:
+      dockerfile: Dockerfile
+    container_name: go-http-server
+    environment:
+      - 'MONGODB_URI: ${{ env.MONGODB_URI }}'
+    ports:
+      - 3000:80
