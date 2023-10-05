@@ -31,6 +31,6 @@ jobs:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         with:
           context: .
-          push: true
+          push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
