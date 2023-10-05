@@ -7,8 +7,8 @@ RUN go mod tidy
 
 RUN go build -o ./out/dist .
 
+ENV MONGODB_URI=$MONGODB_URI
 RUN echo $MONGODB_URI
 
-ENV MONGODB_URI=${MONGODB_URI}
 
 CMD ./out/dist
