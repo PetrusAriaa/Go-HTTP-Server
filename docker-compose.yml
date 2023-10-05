@@ -5,6 +5,7 @@ services:
     build:
       dockerfile: Dockerfile
     container_name: go-http-server
+    image: petrusariaa/go-http-server:latest
     environment:
       MONGODB_URI: $MONGODB_URI
     ports:
