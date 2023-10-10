@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -50,7 +51,7 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(BookList{Data: Books, Length: int64(len(Books)), Accessed: time.Now()})
 	logger.ResponseLogger(r, http.StatusOK, "Response sent")
 }
@@ -81,9 +82,9 @@ func GetBookById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(SingleBook{Data: Book, Length: 1, Accessed: time.Now()})
-	json.NewEncoder(w).Encode(map[string]string{"message": "Test GHAction"})
+	logger.ResponseLogger(r, http.StatusOK, "Response sent")
 }
 
 func AddBook(w http.ResponseWriter, r *http.Request) {
@@ -116,13 +117,56 @@ func AddBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(201)
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"message": "object created"})
 	logger.ResponseLogger(r, http.StatusCreated, "Document created successfully")
 }
 
 func UpdateBook(w http.ResponseWriter, r *http.Request) {
-	return
+	var Book models.Book
+	defer r.Body.Close()
+
+	if err := json.NewDecoder(r.Body).Decode(&Book); err != nil {
+		logger.ResponseLogger(r, http.StatusInternalServerError, err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	param := mux.Vars(r)["id"]
+	_id, err := primitive.ObjectIDFromHex(param)
+	if err != nil {
+		logger.ResponseLogger(r, http.StatusBadRequest, err.Error())
+		http.Error(w, "server: bad request", http.StatusBadRequest)
+		return
+	}
+	log.Println(_id)
+	conn := lib.ConnectDB()
+	coll := conn.Database("bookstore").Collection("book")
+	defer conn.Disconnect(context.Background())
+
+	filter := bson.M{"_id": _id}
+	res, err := coll.UpdateOne(context.Background(), filter, bson.M{
+		"$set": bson.M{
+			"rate":   Book.Rate,
+			"price":  Book.Price,
+			"stocks": Book.Stocks,
+		},
+	})
+	if err != nil {
+		logger.ResponseLogger(r, http.StatusInternalServerError, err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if res.MatchedCount == 0 {
+		log.Println(Book.Rate)
+		logger.ResponseLogger(r, http.StatusNotFound, "mongo: no documents to update")
+		http.Error(w, "mongo: no documents to update", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	logger.ResponseLogger(r, http.StatusNoContent, "Document updated successfully")
 }
 
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
